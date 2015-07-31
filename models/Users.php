@@ -15,4 +15,14 @@ class Users extends Model
 
 	    return $users;
 	}
+
+	public function getUsernameByID($id = null)
+	{
+		if ($id !== null) {
+			$user = User::findOne(['id' => $id]);
+			return $user->username;
+		}
+
+		return false;
+	}
 }

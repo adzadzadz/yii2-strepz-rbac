@@ -19,7 +19,7 @@ class RbacController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['init', 'index'],
+                        'actions' => ['init', 'index', 'updaterole'],
                         'roles' => ['SU'],
                     ],
                 ],
@@ -30,20 +30,27 @@ class RbacController extends Controller
     public function actionIndex()
     {
         $users = Users::getUsers();
+        $roles = Rbac::getRoles();
+        $assigned = Rbac::getAssigned();
 
-        $new = new User;
         return $this->render('index', [
-            'users' => $new,
+            'users' => $users,
+            'roles' => $roles,
+            'assigned' => $assigned,
         ]);
     }
 
-    public function actionUpdateRole()
+    public function actionUpdaterole($userid = null, $role = null)
     {
-        $auth = Yii::$app->authManager;
+        if ($userid !== null && $role !== null) {
+            $auth = Yii::$app->authManager;
+
+            $test2 = $auth->getRole('AUD');
+
+            return var_dump($auth->assign($test2, 2));
+        }       
         
-        
-        
-        return true;
+        return 'Please make sure the "User ID" and the "Role" is provided.';
     }
 
     public function actionInit()

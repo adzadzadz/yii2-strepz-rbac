@@ -3,9 +3,21 @@
 namespace adz\module\strepz\rbac\models;
 
 use yii\base\Model;
+use adz\module\strepz\rbac\models\AuthItem;
+use adz\module\strepz\rbac\models\AuthAssignment;
 
 class Rbac extends Model
 {
+    public function getRoles()
+    {
+        return AuthItem::find()->all();
+    }
+
+    public function getAssigned()
+    {
+        return AuthAssignment::find()->all();
+    }
+
 	public function getInit()
 	{
 		$auth = Yii::$app->authManager;
