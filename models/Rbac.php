@@ -13,9 +13,16 @@ class Rbac extends Model
         return AuthItem::find()->all();
     }
 
-    public function getAssigned()
+    public function getAssigned($all = true, $id = null, $role = null)
     {
-        return AuthAssignment::find()->all();
+        if ($all === true) {
+            return AuthAssignment::find()->all();
+        } elseif ($id !== null && $role !== null) {
+            return AuthAssignment::findOne([
+                'user_id' => $id,
+                'item_name' => $role,
+            ]);
+        }         
     }
 
 	public function getInit()

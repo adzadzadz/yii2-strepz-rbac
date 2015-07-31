@@ -23,7 +23,7 @@
 <div id="role-control row">
 	<div class="col-md-12">
 		<div class="col-md-4">
-			<?= Html::beginForm(['rbac/rbac/updaterole'], 'post', ['enctype' => 'multipart/form-data']) ?>
+			<?= Html::beginForm(['rbac/updaterole'], 'post', ['enctype' => 'multipart/form-data']) ?>
 				<div class="form-group">
 					<label for="">User</label>
 					<?=  Html::dropDownList( 'users', $selection = null, $items_users, ['class' => 'form-control'] ) ?>
@@ -32,6 +32,7 @@
 					<label for="">Tag a Role</label>
 					<?=  Html::dropDownList( 'roles', $selection = null, $items_roles, ['class' => 'form-control'] ) ?>
 				</div>
+				<?= Html::submitButton('Update', ['class' => 'btn btn-primary btn-md']) ?>
 			<?= Html::endForm() ?>
 		</div>
 	</div>
@@ -59,7 +60,13 @@
 			      <tr>
 			        <td><?= Users::getUsernameByID($each->user_id) ?></td>
 			        <td><?= $each->item_name ?></td>
-			        <td>Remove</td>
+			        <td>
+			        	<?= Html::beginForm(['rbac/deleterole'], 'post', ['enctype' => 'multipart/form-data']) ?>
+							<?= Html::hiddenInput('user_id', $value = $each->user_id) ?>
+							<?= Html::hiddenInput('role', $value = $each->item_name) ?>
+							<?= Html::submitButton('Remove', ['class' => 'btn btn-danger btn-sm']) ?>
+						<?= Html::endForm() ?>
+			        </td>
 			      </tr>
 			    <?php } ?>
 			    </tbody>

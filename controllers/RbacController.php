@@ -19,7 +19,7 @@ class RbacController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['init', 'index', 'updaterole'],
+                        'actions' => ['init', 'index', 'updaterole', 'deleterole'],
                         'roles' => ['SU'],
                     ],
                 ],
@@ -40,17 +40,48 @@ class RbacController extends Controller
         ]);
     }
 
-    public function actionUpdaterole($userid = null, $role = null)
+    public function actionUpdaterole()
     {
-        if ($userid !== null && $role !== null) {
-            $auth = Yii::$app->authManager;
+        if (!empty(Yii::$app->request->post())) {
+            $userid = Yii::$app->request->post()['users'];
+            $role = Yii::$app->request->post()['roles'];
 
-            $test2 = $auth->getRole('AUD');
+            if ($userid !== null && $role !== null) {
+                $auth = Yii::$app->authManager;
 
-            return var_dump($auth->assign($test2, 2));
-        }       
+                $assign = $auth->getRole($role);
+
+                if ($auth->assign($assign, $userid)) {
+                    Yii::$app->session->setFlash('success', 'New user role added');
+                } else {
+                    Yii::$app->session->setFlash('error', 'There has been an issue with the process. Please contact your developer.');
+                }
+
+                return $this->redirect(['rbac/index']);
+            }       
+        }
         
         return 'Please make sure the "User ID" and the "Role" is provided.';
+    }
+
+    public function actionDeleterole()
+    {   
+        if (!empty(Yii::$app->request->post())) {
+            $user_id = Yii::$app->request->post()['user_id'];
+            $role = Yii::$app->request->post()['role'];
+
+            $assigned = Rbac::getAssigned(false, $user_id, $role);
+
+            if ($assigned->delete()) {
+                Yii::$app->session->setFlash('success', 'User role has been successfully removed.');
+                return $this->redirect(['rbac/index']);
+            } else {
+                Yii::$app->session->setFlash('error', 'There has been an issue with the process. Please contact your developer.');
+                return $this->redirect(['rbac/index']);
+            }
+        }
+
+        return "I'm not sure what you're trying to do.";
     }
 
     public function actionInit()
