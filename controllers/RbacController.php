@@ -6,6 +6,8 @@ use yii\web\Controller;
 use Yii;
 use yii\filters\AccessControl;
 use adz\module\strepz\rbac\models\Rbac;
+use adz\module\strepz\rbac\models\Users;
+use common\models\User;
 
 class RbacController extends Controller
 {
@@ -17,12 +19,31 @@ class RbacController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'actions' => ['init'],
+                        'actions' => ['init', 'index'],
                         'roles' => ['SU'],
                     ],
                 ],
             ],
         ];
+    }
+
+    public function actionIndex()
+    {
+        $users = Users::getUsers();
+
+        $new = new User;
+        return $this->render('index', [
+            'users' => $new,
+        ]);
+    }
+
+    public function actionUpdateRole()
+    {
+        $auth = Yii::$app->authManager;
+        
+        
+        
+        return true;
     }
 
     public function actionInit()
